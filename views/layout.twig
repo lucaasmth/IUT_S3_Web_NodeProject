@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>S3 web</title>
+	{% block stylesheets %}
+		<link rel="stylesheet" href="/css/bootstrap.css" >
+	{% endblock %}
+</head>
+<body>
+	<div class="container">
+		{% block body %}
+		{% endblock %}
+	</div>
+
+	{% block javascripts %}
+		<script src="/js/jquery-3.5.1.slim.min.js"></script>
+		<script src="js/popper.min.js"></script>
+		<script src="/js/bootstrap.js"></script>
+	{% endblock %}
+</body>
+</html>

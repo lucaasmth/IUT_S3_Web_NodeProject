@@ -1,0 +1,20 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+    <table class="table">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Nom</td>
+                <td>Couleur</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ animal.id }}</td>
+                <td>{{ animal.nom_animal }}</td>
+                <td>{{ animal.couleur }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
