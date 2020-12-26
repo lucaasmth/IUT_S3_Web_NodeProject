@@ -1,7 +1,6 @@
 {
   "name": "node_td3",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,5 +12,15 @@
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "twig": "^1.15.3"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucaasmth/DUT-S3-Web-NodeProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lucaasmth/DUT-S3-Web-NodeProject/issues"
+  },
+  "homepage": "https://github.com/lucaasmth/DUT-S3-Web-NodeProject#readme",
+  "description": ""
 }
