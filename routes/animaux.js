@@ -5,7 +5,8 @@ const db = require("../db");
 const { body, validationResult } = require('express-validator');
 
 router.get("/", (req, res) => {
-	db.query('SELECT * FROM animal', (err, listeAnimaux) => {
+	db.query('SELECT animal.*, type_animal.libelle as type_libelle FROM animal JOIN type_animal on type_animal.id = animal.type_animal_id', (err, listeAnimaux) => {
+		console.log(listeAnimaux);
 		if(!err)
 			res.render("animaux_show.twig", { animaux: listeAnimaux });
 		else
@@ -70,10 +71,22 @@ router.get("/:id/delete", (req, res) => {
 	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
 		if(!err) {
 			if (animal[0] === undefined) res.status(404).end();
+			else res.render("animal_delete.twig", { animal: animal[0] });
+		}
+		else res.status(500).send(err);
+	});
+});
+
+router.post("/:id/delete", (req, res) => {
+	const id = req.params.id;
+
+	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
+		if(!err) {
+			if (animal[0] === undefined) res.status(404).end();
 			else
 				db.query('DELETE FROM animal WHERE id = ' + id, (err) => {
 					if (err) throw err;
-					else res.send("Animal supprimé");
+					else res.redirect("/animaux");
 				});
 		}
 		else res.status(500).send(err);

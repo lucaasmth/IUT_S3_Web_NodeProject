@@ -1,0 +1,9 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+    <h1>Supprimer un animal</h1>
+    <form action="" method="POST">
+        <p>Etes-vous sûr de vouloir supprimer {{ animal.nom_animal }} ?</p>
+        <input type="submit" class="btn btn-danger" value="Supprimer">
+    </form>
+{% endblock %}
