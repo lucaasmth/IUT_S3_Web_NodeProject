@@ -5,45 +5,81 @@
 	<form action="" method="POST">
 		<div class="mb-3">
 			<label for="type_animal_id" class="form-label">Type de l'animal</label>
-			<select class="form-control" id="type_animal_id">
+			<select class="form-control" id="type_animal_id" name="type_animal_id">
+				<option value=0>Choisir un type</option>
 				{% for typeAnimal in typesAnimal %}
-					<option value={{ typeAnimal.id }}>{{ typeAnimal.libelle }}</option>
+					<option value={{ typeAnimal.id }} {% if animal.type_animal_id == typeAnimal.id %}selected{% endif %}>{{ typeAnimal.libelle }}</option>
 				{% endfor %}
 			</select>
+			{% for error in errors %}
+				{% if error.param == "type_animal_id" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="nom_animal" class="form-label">Nom de l'animal</label>
-			<input type="text" class="form-control" id="nom_animal">
+			<input type="text" class="form-control" id="nom_animal" name="nom_animal" value="{{ animal.nom_animal }}">
+			{% for error in errors %}
+				{% if error.param == "nom_animal" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="prix_achat" class="form-label">Prix de l'animal</label>
 			<div class="input-group">
-				<input type="text" class="form-control" id="prix_achat" aria-describedby="euro-addon">
+				<input type="text" class="form-control" id="prix_achat" name="prix_achat" value="{{ animal.prix_achat }}" aria-describedby="euro-addon">
 				<span class="input-group-text" id="euro-addon">€</span>
 			</div>
+			{% for error in errors %}
+				{% if error.param == "prix_achat" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="date_naissance" class="form-label">Date de naissance</label>
-			<input type="text" class="form-control" id="date_naissance" aria-describedby="date_naissance_help">
+			<input type="text" class="form-control" id="date_naissance" name="date_naissance" value="{{ animal.date_naissance }}" aria-describedby="date_naissance_help">
 			<div id="date_naissance_help" class="form-text">Sous la forme (jj/mm/aaaa)</div>
+			{% for error in errors %}
+				{% if error.param == "date_naissance" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="couleur" class="form-label">Couleur de l'animal</label>
-			<input type="text" class="form-control" id="couleur">
+			<input type="text" class="form-control" id="couleur" name="couleur" value="{{ animal.couleur }}">
+			{% for error in errors %}
+				{% if error.param == "couleur" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="poids" class="form-label">Poids de l'animal</label>
-			<input type="text" class="form-control" id="poids">
+			<input type="text" class="form-control" id="poids" name="poids" value="{{ animal.poids }}">
+			{% for error in errors %}
+				{% if error.param == "poids" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<div class="mb-3">
 			<label for="taille" class="form-label">Taille de l'animal</label>
-			<input type="text" class="form-control" id="taille">
+			<input type="text" class="form-control" id="taille" name="taille" value="{{ animal.taille }}">
+			{% for error in errors %}
+				{% if error.param == "taille" %}
+					<div>{{ error.msg }}</div>
+				{% endif %}
+			{% endfor %}
 		</div>
 
 		<input type="submit" class="btn btn-primary" value="Ajouter">
