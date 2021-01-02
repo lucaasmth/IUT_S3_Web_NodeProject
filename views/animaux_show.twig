@@ -1,13 +1,19 @@
 {% extends "layout.twig" %}
 
 {% block body %}
+    <h1>Liste des animaux</h1>
     <table class="table">
         <thead>
             <tr>
                 <td>#</td>
                 <td>Nom</td>
-                <td>Couleur</td>
+                <td>Type</td>
+                <td>Prix</td>
                 <td>Naissance</td>
+                <td>Couleur</td>
+                <td>Poids</td>
+                <td>Taille</td>
+                <td>Actions</td>
             </tr>
         </thead>
         <tbody>
@@ -15,10 +21,16 @@
                 <tr>
                     <td>{{ animal.id }}</td>
                     <td>{{ animal.nom_animal }}</td>
-                    <td>{{ animal.couleur }}</td>
+                    <td>{{ animal.type_libelle }}</td>
+                    <td>{{ animal.prix_achat }}</td>
                     <td>{{ animal.date_naissance | date("d/m/Y") }}</td>
+                    <td>{{ animal.couleur }}</td>
+                    <td>{{ animal.poids }}kg</td>
+                    <td>{{ animal.taille }}cm</td>
+                    <td><a class="btn btn-primary" href="/animaux/{{ animal.id }}/edit">🖊️</a> <a class="btn btn-danger" href="/animaux/{{ animal.id }}/delete">🗑️</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <a class="btn btn-primary" href="/animaux/add">Ajouter</a>
 {% endblock %}
