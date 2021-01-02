@@ -13,7 +13,7 @@
                 <td>Couleur</td>
                 <td>Poids</td>
                 <td>Taille</td>
-                <td>Actions</td>
+                {% if user.role == "ADMIN" %}<td>Actions</td>{% endif %}
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
                     <td>{{ animal.couleur }}</td>
                     <td>{{ animal.poids }}kg</td>
                     <td>{{ animal.taille }}cm</td>
-                    <td><a class="btn btn-primary" href="/animaux/{{ animal.id }}/edit">🖊️</a> <a class="btn btn-danger" href="/animaux/{{ animal.id }}/delete">🗑️</a></td>
+                    {% if user.role == "ADMIN" %}<td><a class="btn btn-primary" href="/animaux/{{ animal.id }}/edit">🖊️</a> <a class="btn btn-danger" href="/animaux/{{ animal.id }}/delete">🗑️</a></td>{% endif %}
                 </tr>
             {% endfor %}
         </tbody>

@@ -7,7 +7,6 @@ const csrfProtection = csrf({ cookie: false })
 const { body, validationResult } = require('express-validator');
 
 router.get("/", (req, res) => {
-	console.log(res.locals);
 	db.query('SELECT animal.*, type_animal.libelle as type_libelle FROM animal JOIN type_animal on type_animal.id = animal.type_animal_id', (err, listeAnimaux) => {
 		if(!err)
 			res.render("animaux_show.twig", { animaux: listeAnimaux });
@@ -128,7 +127,7 @@ router.post(
 	body('type_animal_id').trim().not().equals('0').withMessage("Veuillez choisir un type d'animal"),
 	body('nom_animal').trim().isLength({ min: 3 }).withMessage('Le nom doit faire au moins 5 caractères').isAlpha().withMessage('Le nom doit contenir uniquement des lettres'),
 	body('prix_achat').trim().isLength({ min: 1 }).withMessage("Le prix ne peut pas être vide").isNumeric().withMessage("Le prix ne doit contenir que des chiffres"),
-	//body('date_naissance').trim().matches("/^\d{2}[/]\d{2}[/]\d{4}$/").withMessage("La date de naissance doit être sous la forme dd/mm/aaaa"),
+	//body('date_naissance').trim().isISO8601('dd/mm/yyyy').withMessage("La date de naissance doit être sous la forme dd/mm/aaaa"),
 	body('couleur').trim().isLength({ min: 1 }).withMessage("La couleur ne peut pas être vide"),
 	body('poids').trim().isLength({ min: 1 }).withMessage("Le poids ne peut pas être vide").isNumeric().withMessage("Le poids ne doit contenir que des chiffres"),
 	body('taille').trim().isLength({ min: 1 }).withMessage("La taille ne peut pas être vide").isNumeric().withMessage("La taille ne doit contenir que des chiffres"),
