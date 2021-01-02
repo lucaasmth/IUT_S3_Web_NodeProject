@@ -1,0 +1,51 @@
+{% extends "layout.twig" %}
+
+{% block body %}
+	<h1>Ajouter un animal</h1>
+	<form action="" method="POST">
+		<div class="mb-3">
+			<label for="type_animal_id" class="form-label">Type de l'animal</label>
+			<select class="form-control" id="type_animal_id">
+				{% for typeAnimal in typesAnimal %}
+					<option value={{ typeAnimal.id }}>{{ typeAnimal.libelle }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="mb-3">
+			<label for="nom_animal" class="form-label">Nom de l'animal</label>
+			<input type="text" class="form-control" id="nom_animal">
+		</div>
+
+		<div class="mb-3">
+			<label for="prix_achat" class="form-label">Prix de l'animal</label>
+			<div class="input-group">
+				<input type="text" class="form-control" id="prix_achat" aria-describedby="euro-addon">
+				<span class="input-group-text" id="euro-addon">€</span>
+			</div>
+		</div>
+
+		<div class="mb-3">
+			<label for="date_naissance" class="form-label">Date de naissance</label>
+			<input type="text" class="form-control" id="date_naissance" aria-describedby="date_naissance_help">
+			<div id="date_naissance_help" class="form-text">Sous la forme (jj/mm/aaaa)</div>
+		</div>
+
+		<div class="mb-3">
+			<label for="couleur" class="form-label">Couleur de l'animal</label>
+			<input type="text" class="form-control" id="couleur">
+		</div>
+
+		<div class="mb-3">
+			<label for="poids" class="form-label">Poids de l'animal</label>
+			<input type="text" class="form-control" id="poids">
+		</div>
+
+		<div class="mb-3">
+			<label for="taille" class="form-label">Taille de l'animal</label>
+			<input type="text" class="form-control" id="taille">
+		</div>
+
+		<input type="submit" class="btn btn-primary" value="Ajouter">
+	</form>
+{% endblock %}
