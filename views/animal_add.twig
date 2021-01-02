@@ -3,6 +3,8 @@
 {% block body %}
 	<h1>Ajouter un animal</h1>
 	<form action="" method="POST">
+		<input type="hidden" name="_csrf" value="{{csrfToken}}">
+		
 		<div class="mb-3">
 			<label for="type_animal_id" class="form-label">Type de l'animal</label>
 			<select class="form-control" id="type_animal_id" name="type_animal_id">

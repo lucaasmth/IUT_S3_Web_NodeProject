@@ -8,6 +8,16 @@
 	{% endblock %}
 </head>
 <body>
+	{% for message in success_messages %}
+		<div class="alert alert-primary" role="alert">
+			{{ message }}
+		</div>
+	{% endfor %}
+	{% for message in error_messages %}
+		<div class="alert alert-danger" role="alert">
+			{{ message }}
+		</div>
+	{% endfor %}
 	<div class="container">
 		{% block body %}
 		{% endblock %}

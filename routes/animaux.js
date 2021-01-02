@@ -2,12 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Twig = require("twig");
 const db = require("../db");
+const csrf = require('csurf')
+const csrfProtection = csrf({ cookie: false })
 const { body, validationResult } = require('express-validator');
-const csurf = require('csurf');
 
 router.get("/", (req, res) => {
+	console.log(res.locals);
 	db.query('SELECT animal.*, type_animal.libelle as type_libelle FROM animal JOIN type_animal on type_animal.id = animal.type_animal_id', (err, listeAnimaux) => {
-		console.log(listeAnimaux);
 		if(!err)
 			res.render("animaux_show.twig", { animaux: listeAnimaux });
 		else
@@ -15,10 +16,10 @@ router.get("/", (req, res) => {
 	});
 });
 
-router.get("/add", (req, res) => {
+router.get("/add", csrfProtection, (req, res) => {
 	db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
 		if(!err)
-			res.render("animal_add.twig", { typesAnimal: listeTypesAnimaux });
+			res.render("animal_add.twig", { typesAnimal: listeTypesAnimaux, csrfToken: req.csrfToken() });
 		else
 			res.status(500).send(err);
 	});
@@ -26,6 +27,7 @@ router.get("/add", (req, res) => {
 
 router.post(
 	"/add",
+	csrfProtection,
 	body('type_animal_id').trim().not().equals('0').withMessage("Veuillez choisir un type d'animal"),
 	body('nom_animal').trim().isLength({ min: 3 }).withMessage('Le nom doit faire au moins 5 caractères').isAlpha().withMessage('Le nom doit contenir uniquement des lettres'),
 	body('prix_achat').trim().isLength({ min: 1 }).withMessage("Le prix ne peut pas être vide").isNumeric().withMessage("Le prix ne doit contenir que des chiffres"),
@@ -39,7 +41,7 @@ router.post(
 		if (!errors.isEmpty()) {
 			db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
 				if(!err)
-					res.render("animal_add.twig", { animal: data, typesAnimal: listeTypesAnimaux, errors: errors.errors });
+					res.render("animal_add.twig", { animal: data, typesAnimal: listeTypesAnimaux, errors: errors.errors, csrfToken: req.csrfToken() });
 				else
 					res.status(500).send(err);
 			});
@@ -47,7 +49,10 @@ router.post(
 		else {
 			const date = data.date_naissance.split("/")[2] + "-" + data.date_naissance.split("/")[1] + "-" + data.date_naissance.split("/")[0];
 			db.query('INSERT INTO animal(type_animal_id, nom_animal, prix_achat, date_naissance, couleur, poids, taille) VALUES (' + data.type_animal_id + ', \'' + data.nom_animal + '\', ' + data.prix_achat + ', \'' + date + '\', \'' + data.couleur + '\', ' + data.poids + ', ' + data.taille + ')', (err) => {
-				if(!err) res.redirect("/animaux");
+				if(!err) {
+					req.flash('success_messages', 'Animal bien ajouté');
+					res.redirect("/animaux");
+				}
 				else res.status(500).send(err);
 			});
 		}
@@ -66,19 +71,19 @@ router.get("/:id", (req, res) => {
 	});
 });
 
-router.get("/:id/delete", (req, res) => {
+router.get("/:id/delete", csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
 		if(!err) {
 			if (animal[0] === undefined) res.status(404).end();
-			else res.render("animal_delete.twig", { animal: animal[0] });
+			else res.render("animal_delete.twig", { animal: animal[0], csrfToken: req.csrfToken() });
 		}
 		else res.status(500).send(err);
 	});
 });
 
-router.post("/:id/delete", (req, res) => {
+router.post("/:id/delete", csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
@@ -87,14 +92,17 @@ router.post("/:id/delete", (req, res) => {
 			else
 				db.query('DELETE FROM animal WHERE id = ' + id, (err) => {
 					if (err) throw err;
-					else res.redirect("/animaux");
+					else {
+						req.flash('success_messages', 'Animal bien supprimé');
+						res.redirect("/animaux");
+					}
 				});
 		}
 		else res.status(500).send(err);
 	});
 });
 
-router.get("/:id/edit", (req, res) => {
+router.get("/:id/edit", csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
@@ -105,7 +113,7 @@ router.get("/:id/edit", (req, res) => {
 					const date = new Date(animal[0].date_naissance);
 					console.log(date);
 					animal[0].date_naissance = date.getDate().toString().padStart(2, "0") + "/" + date.getMonth().toString().padStart(2, "0") + "/" + date.getFullYear();
-					res.render("animal_edit.twig", { animal: animal[0], typesAnimal: listeTypesAnimaux });
+					res.render("animal_edit.twig", { animal: animal[0], typesAnimal: listeTypesAnimaux, csrfToken: req.csrfToken() });
 				}
 			}
 			else res.status(500).send(err);
@@ -116,6 +124,7 @@ router.get("/:id/edit", (req, res) => {
 
 router.post(
 	"/:id/edit",
+	csrfProtection,
 	body('type_animal_id').trim().not().equals('0').withMessage("Veuillez choisir un type d'animal"),
 	body('nom_animal').trim().isLength({ min: 3 }).withMessage('Le nom doit faire au moins 5 caractères').isAlpha().withMessage('Le nom doit contenir uniquement des lettres'),
 	body('prix_achat').trim().isLength({ min: 1 }).withMessage("Le prix ne peut pas être vide").isNumeric().withMessage("Le prix ne doit contenir que des chiffres"),
@@ -129,14 +138,17 @@ router.post(
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
-				if(!err) res.render("animal_edit.twig", { animal: data, typesAnimal: listeTypesAnimaux, errors: errors.errors });
+				if(!err) res.render("animal_edit.twig", { animal: data, typesAnimal: listeTypesAnimaux, errors: errors.errors, csrfToken: req.csrfToken() });
 				else res.status(500).send(err);
 			});
 		}
 		else {
 			const date = data.date_naissance.split("/")[2] + "-" + data.date_naissance.split("/")[1] + "-" + data.date_naissance.split("/")[0];
 			db.query("UPDATE animal SET type_animal_id=" + data.type_animal_id + ", nom_animal='" + data.nom_animal + "', prix_achat=" + data.prix_achat + ", date_naissance='" + date + "', couleur='" + data.couleur + "', poids=" + data.poids + ", taille=" + data.taille + " WHERE id=" + id, (err) => {
-				if(!err) res.redirect("/animaux");
+				if(!err) {
+					req.flash('success_messages', 'Animal bien modifié');
+					res.redirect("/animaux");
+				}
 				else res.status(500).send(err);
 			});
 		}
