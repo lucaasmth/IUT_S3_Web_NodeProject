@@ -7,6 +7,7 @@
                 <td>#</td>
                 <td>Nom</td>
                 <td>Couleur</td>
+                <td>Naissance</td>
             </tr>
         </thead>
         <tbody>
@@ -15,6 +16,7 @@
                     <td>{{ animal.id }}</td>
                     <td>{{ animal.nom_animal }}</td>
                     <td>{{ animal.couleur }}</td>
+                    <td>{{ animal.date_naissance | date("d/m/Y") }}</td>
                 </tr>
             {% endfor %}
         </tbody>
