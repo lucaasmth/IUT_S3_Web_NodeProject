@@ -6,6 +6,14 @@ const csrf = require('csurf')
 const csrfProtection = csrf({ cookie: false })
 const { body, validationResult } = require('express-validator');
 
+function isAdmin(req, res, next) {
+    if (req.user.role == "ADMIN") {
+        next();
+    } else {
+        res.redirect('/animaux');
+    }
+}
+
 router.get("/", (req, res) => {
 	db.query('SELECT animal.*, type_animal.libelle as type_libelle FROM animal JOIN type_animal on type_animal.id = animal.type_animal_id', (err, listeAnimaux) => {
 		if(!err)
@@ -15,7 +23,7 @@ router.get("/", (req, res) => {
 	});
 });
 
-router.get("/add", csrfProtection, (req, res) => {
+router.get("/add", isAdmin, csrfProtection, (req, res) => {
 	db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
 		if(!err)
 			res.render("animal_add.twig", { typesAnimal: listeTypesAnimaux, csrfToken: req.csrfToken() });
@@ -26,6 +34,7 @@ router.get("/add", csrfProtection, (req, res) => {
 
 router.post(
 	"/add",
+	isAdmin,
 	csrfProtection,
 	body('type_animal_id').trim().not().equals('0').withMessage("Veuillez choisir un type d'animal"),
 	body('nom_animal').trim().isLength({ min: 3 }).withMessage('Le nom doit faire au moins 5 caractères').isAlpha().withMessage('Le nom doit contenir uniquement des lettres'),
@@ -70,7 +79,7 @@ router.get("/:id", (req, res) => {
 	});
 });
 
-router.get("/:id/delete", csrfProtection, (req, res) => {
+router.get("/:id/delete", isAdmin, csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
@@ -82,7 +91,7 @@ router.get("/:id/delete", csrfProtection, (req, res) => {
 	});
 });
 
-router.post("/:id/delete", csrfProtection, (req, res) => {
+router.post("/:id/delete", isAdmin, csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM animal WHERE id = ' + id, (err, animal) => {
@@ -101,7 +110,7 @@ router.post("/:id/delete", csrfProtection, (req, res) => {
 	});
 });
 
-router.get("/:id/edit", csrfProtection, (req, res) => {
+router.get("/:id/edit", isAdmin, csrfProtection, (req, res) => {
 	const id = req.params.id;
 
 	db.query('SELECT * FROM type_animal', (err, listeTypesAnimaux) => {
@@ -123,6 +132,7 @@ router.get("/:id/edit", csrfProtection, (req, res) => {
 
 router.post(
 	"/:id/edit",
+	isAdmin,
 	csrfProtection,
 	body('type_animal_id').trim().not().equals('0').withMessage("Veuillez choisir un type d'animal"),
 	body('nom_animal').trim().isLength({ min: 3 }).withMessage('Le nom doit faire au moins 5 caractères').isAlpha().withMessage('Le nom doit contenir uniquement des lettres'),
