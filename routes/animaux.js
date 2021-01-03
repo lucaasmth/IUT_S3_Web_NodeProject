@@ -119,8 +119,7 @@ router.get("/:id/edit", isAdmin, csrfProtection, (req, res) => {
 				if (animal[0] === undefined) res.status(404).end();
 				else {
 					const date = new Date(animal[0].date_naissance);
-					console.log(date);
-					animal[0].date_naissance = date.getDate().toString().padStart(2, "0") + "/" + date.getMonth().toString().padStart(2, "0") + "/" + date.getFullYear();
+					animal[0].date_naissance = date.getDate().toString().padStart(2, "0") + "/" + (date.getMonth() + 1).toString().padStart(2, "0") + "/" + date.getFullYear();
 					res.render("animal_edit.twig", { animal: animal[0], typesAnimal: listeTypesAnimaux, csrfToken: req.csrfToken() });
 				}
 			}
