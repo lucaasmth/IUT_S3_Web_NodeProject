@@ -32,5 +32,5 @@
             {% endfor %}
         </tbody>
     </table>
-    <a class="btn btn-primary" href="/animaux/add">Ajouter</a>
+    {% if user.role == "ADMIN" %}<a class="btn btn-primary" href="/animaux/add">Ajouter</a>{% endif %}
 {% endblock %}
